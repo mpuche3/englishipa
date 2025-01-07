@@ -374,6 +374,7 @@ function get_books(TEXTS_TRANS){
         `./${folder}/books/B016/B016_${xxxxxx}_ALL.txt`,
         `./${folder}/books/B017/B017_${xxxxxx}_ALL.txt`,
         `./${folder}/books/B018/B018_${xxxxxx}_ALL.txt`,
+        `./${folder}/books/B019/B019_${xxxxxx}_ALL.txt`,
     ]
     for (const url of urls){
         const text = get_text(url)
