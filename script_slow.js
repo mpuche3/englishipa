@@ -560,7 +560,7 @@ function play(){
             }, 600)
         })
         audio.play()   
-    } else {
+    } else if (voice !== "echo") {
         pause_play()
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.voice = STATE.voice
