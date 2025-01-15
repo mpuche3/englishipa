@@ -1,5 +1,25 @@
 console.log("Running script_slow.js")
 
+function fileExistsSync(url) {
+    let exists = false;
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("HEAD", url, false); // Synchronous mode
+        xhr.send();
+        if (xhr.status === 200) {
+            exists = true;
+        }
+    } catch (error) {
+        console.error("Error checking file:", error);
+    }
+    return exists;
+}
+
+function get_hash(text) {
+    const hashHex = sha256(text); // Compute the SHA-256 hash as a hex string
+    return "ECHO_" + hashHex.substring(0, 30);
+}
+
 const STATE = {
     BXXX: "B001",
     CXXX: "C000",
@@ -499,45 +519,62 @@ function addOneToNumber(numStr) {
         return num.toString();
     }
 }
-
+//ECHO_f6b6961a72f79f3b0e46a0312422a0.mp3
 function play(){
     STATE.refresh_text();
     resizeText();
-    if (!STATE.isHardMuted && !STATE.isSoftMuted) {
-        const voice = STATE.voice  
-        if (voice === "echo"){
-            pause_play()      
-            const audioFileFullPath = obj_tracks[STATE.BXXX][STATE.CXXX][STATE.SXXX]["audio"];
-            const audio = new Audio(audioFileFullPath);
-            audio.playbackRate = playbackRate;
-            audios.push(audio)
-            audio.addEventListener("ended", function () {
-                setTimeout(function () {
-                    if (!STATE.isRepeat){
-                        next_track()
-                    } else {
-                        play()                
-                    }
-                }, 600)
-            })
-            audio.play()   
-        } else {
-            pause_play()
-            const text = obj_tracks[STATE.BXXX][STATE.CXXX][STATE.SXXX]["text"];
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.voice = STATE.voice
-            utterance.rate = 0.85;
-            utterance.onend = function(){
-                setTimeout(function () {
-                    if (!STATE.isRepeat){
-                        next_track()
-                    } else {
-                        play()                  
-                    }
-                }, 600)
-            }
-            window.speechSynthesis.speak(utterance);                 
+    if (STATE.isHardMuted || STATE.isSoftMuted) {
+        return
+    }
+    const text = obj_tracks[STATE.BXXX][STATE.CXXX][STATE.SXXX]["text"];
+    const audioEchoFileFullPath = `./audio/echo/${get_hash(text)}.mp3`
+    const audioFileFullPath = obj_tracks[STATE.BXXX][STATE.CXXX][STATE.SXXX]["audio"];
+    const voice = STATE.voice
+    if ((voice === "echo") && fileExistsSync(audioEchoFileFullPath)){
+        pause_play()      
+        const audio = new Audio(audioEchoFileFullPath);
+        audio.playbackRate = playbackRate;
+        audios.push(audio)
+        audio.addEventListener("ended", function () {
+            setTimeout(function () {
+                if (!STATE.isRepeat){
+                    next_track()
+                } else {
+                    play()                
+                }
+            }, 600)
+        })
+        audio.play()
+    } else if ((voice === "echo" && fileExistsSync(audioFileFullPath))){
+        pause_play()      
+        const audio = new Audio(audioFileFullPath);
+        audio.playbackRate = playbackRate;
+        audios.push(audio)
+        audio.addEventListener("ended", function () {
+            setTimeout(function () {
+                if (!STATE.isRepeat){
+                    next_track()
+                } else {
+                    play()                
+                }
+            }, 600)
+        })
+        audio.play()   
+    } else {
+        pause_play()
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = STATE.voice
+        utterance.rate = 0.85;
+        utterance.onend = function(){
+            setTimeout(function () {
+                if (!STATE.isRepeat){
+                    next_track()
+                } else {
+                    play()                  
+                }
+            }, 600)
         }
+        window.speechSynthesis.speak(utterance);                 
     }
 }
 
