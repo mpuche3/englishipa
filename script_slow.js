@@ -249,7 +249,7 @@ const STATE = {
     },
 
     refresh_warning (){
-        const isBookWithSound = ["B001", "B002", "B009", "B017"].includes(this.BXXX)
+        const isBookWithSound = ["B001", "B002", "B009", "B016", "B020"].includes(this.BXXX)
         const areVoicesAvailable = this.voices.length !== 0
         if (areVoicesAvailable || isBookWithSound) {
             document.querySelector("#row-warnings").style.display = "none"
@@ -308,7 +308,7 @@ function deleteElementAndChildren(elementId) {
 
 function truncateString(str) {
     const max_length = 28
-    str = str.trim().replace(".", "").replace(":", "").trim()
+    str = str.trim().replace(".", "").trim()
     str = str.replace("The 101 most interesting concepts of ", "")
     str = str.replace("ðə 101 móʊst ᵻ́ntərəstᵻŋ kɒ́nsɛpts əv ", "")
     str = str.replace("The 101 most interesting concepts in ", "")
@@ -336,7 +336,7 @@ function truncateString(str) {
     if (str.length <= max_length) {
         return str;
     }
-    str = str.trim().replace(".", "").replace(":", "").trim()
+    str = str.trim().replace(".", "").trim()
     return str;
 }
 
@@ -378,23 +378,24 @@ function get_books(TEXTS_TRANS){
     const urls = [
         `./${folder}/books/B001/B001_${xxxxxx}_ALL.txt`,
         `./${folder}/books/B002/B002_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B003/B003_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B004/B004_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B005/B005_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B006/B006_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B007/B007_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B008/B008_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B009/B009_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B010/B010_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B011/B011_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B012/B012_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B013/B013_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B014/B014_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B015/B015_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B003/B003_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B004/B004_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B005/B005_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B006/B006_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B007/B007_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B008/B008_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B009/B009_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B010/B010_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B011/B011_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B012/B012_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B013/B013_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B014/B014_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B015/B015_${xxxxxx}_ALL.txt`,
         `./${folder}/books/B016/B016_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B017/B017_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B018/B018_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B019/B019_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B017/B017_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B018/B018_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B019/B019_${xxxxxx}_ALL.txt`,
+        `./${folder}/books/B020/B020_${xxxxxx}_ALL.txt`,
     ]
     for (const url of urls){
         const text = get_text(url)
