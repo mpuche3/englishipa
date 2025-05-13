@@ -249,13 +249,13 @@ const STATE = {
     },
 
     refresh_warning (){
-        const isBookWithSound = ["B001", "B002", "B009", "B016", "B020"].includes(this.BXXX)
-        const areVoicesAvailable = this.voices.length !== 0
-        if (areVoicesAvailable || isBookWithSound) {
-            document.querySelector("#row-warnings").style.display = "none"
-        } else {
-            document.querySelector("#row-warnings").style.display = "flex"
-        }
+        // const isBookWithSound = ["B001", "B002", "B009", "B016", "B020"].includes(this.BXXX)
+        // const areVoicesAvailable = this.voices.length !== 0
+        // if (areVoicesAvailable || isBookWithSound) {
+        //     document.querySelector("#row-warnings").style.display = "none"
+        // } else {
+        //     document.querySelector("#row-warnings").style.display = "flex"
+        // }
     }
 }
 
@@ -395,7 +395,9 @@ function get_books(TEXTS_TRANS){
         // `./${folder}/books/B017/B017_${xxxxxx}_ALL.txt`,
         // `./${folder}/books/B018/B018_${xxxxxx}_ALL.txt`,
         // `./${folder}/books/B019/B019_${xxxxxx}_ALL.txt`,
-        `./${folder}/books/B020/B020_${xxxxxx}_ALL.txt`,
+        // `./${folder}/books/B020/B020_${xxxxxx}_ALL.txt`,
+        `./${folder}/books/B021/B021_${xxxxxx}_ALL.txt`,
+        `./${folder}/books/B022/B022_${xxxxxx}_ALL.txt`,
     ]
     for (const url of urls){
         const text = get_text(url)
