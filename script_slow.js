@@ -27,31 +27,31 @@ const STATE = {
     voices: [],
     _voice: "echo",
     _isPhonetic: false,
-    _isRepeat: false,    
+    _isRepeat: false,
     _isSoftMuted: false,
     _isHardMuted: true,
     _mapVoiceNames: {
-            // Edge
-            "Ava": "Microsoft Ava Online (Natural) - English (United States)",
-            "Andrew": "Microsoft Andrew Online (Natural) - English (United States)",
-            "Emma": "Microsoft Emma Online (Natural) - English (United States)",
-            "Brian": "Microsoft Brian Online (Natural) - English (United States)",
-            "Ana": "Microsoft Ana Online (Natural) - English (United States)",
-            "Aria": "Microsoft Aria Online (Natural) - English (United States)",
-            "Chris": "Microsoft Christopher Online (Natural) - English (United States)",
-            "Eric": "Microsoft Eric Online (Natural) - English (United States)",
-            "Guy": "Microsoft Guy Online (Natural) - English (United States)",
-            "Jenny": "Microsoft Jenny Online (Natural) - English (United States)",
-            "Michelle": "Microsoft Michelle Online (Natural) - English (United States)",
-            "Roger": "Microsoft Roger Online (Natural) - English (United States)",
-            "Steffan": "Microsoft Steffan Online (Natural) - English (United States)",
-            // Chrome
-            "UK Male": "Google UK English Male",
-            "UK Female": "Google UK English Female",
-            "US Female": "Google US English",
+        // Edge
+        "Ava": "Microsoft Ava Online (Natural) - English (United States)",
+        "Andrew": "Microsoft Andrew Online (Natural) - English (United States)",
+        "Emma": "Microsoft Emma Online (Natural) - English (United States)",
+        "Brian": "Microsoft Brian Online (Natural) - English (United States)",
+        "Ana": "Microsoft Ana Online (Natural) - English (United States)",
+        "Aria": "Microsoft Aria Online (Natural) - English (United States)",
+        "Chris": "Microsoft Christopher Online (Natural) - English (United States)",
+        "Eric": "Microsoft Eric Online (Natural) - English (United States)",
+        "Guy": "Microsoft Guy Online (Natural) - English (United States)",
+        "Jenny": "Microsoft Jenny Online (Natural) - English (United States)",
+        "Michelle": "Microsoft Michelle Online (Natural) - English (United States)",
+        "Roger": "Microsoft Roger Online (Natural) - English (United States)",
+        "Steffan": "Microsoft Steffan Online (Natural) - English (United States)",
+        // Chrome
+        "UK Male": "Google UK English Male",
+        "UK Female": "Google UK English Female",
+        "US Female": "Google US English",
     },
-    
-    get_voices(){
+
+    get_voices() {
         this._voices = window.speechSynthesis.getVoices().filter(voice => {
             return Object.values(this._mapVoiceNames).includes(voice.name)
         });
@@ -60,69 +60,69 @@ const STATE = {
 
     get_voice_obj() {
         const voiceNames = STATE.voices
-        for (const voiceName of voiceNames){
+        for (const voiceName of voiceNames) {
             const voices = window.speechSynthesis.getVoices();
             for (let i = 0; i < voices.length; i++) {
                 if (voices[i].name.includes(voiceName)) {
                     return voices[i];
                 }
-            }    
+            }
         }
     },
 
-    get voices(){
+    get voices() {
         return this._voices
     },
 
-    set voices(value){
+    set voices(value) {
         this._voices = value
     },
 
-    get voice(){
+    get voice() {
         return this._voice
     },
 
-    set voice(value){
+    set voice(value) {
         this._voice = value
     },
 
-    get isPhonetic(){
+    get isPhonetic() {
         return this._isPhonetic
     },
 
-    set isPhonetic(value){
+    set isPhonetic(value) {
         this._isPhonetic = !!value
         this.refresh_text()
     },
 
-    get isRepeat(){
+    get isRepeat() {
         return this._isRepeat
     },
 
-    set isRepeat(value){
+    set isRepeat(value) {
         this._isRepeat = !!value
         this.refresh_repeat()
     },
 
-    get isSoftMuted(){
+    get isSoftMuted() {
         return this._isSoftMuted
     },
 
-    set isSoftMuted(value){
+    set isSoftMuted(value) {
         this._isSoftMuted = !!value
         this.refresh_SoftMuted()
     },
 
-    get isHardMuted(){
+    get isHardMuted() {
         return this._isHardMuted
     },
 
-    set isHardMuted(value){
+    set isHardMuted(value) {
         this._isHardMuted = !!value
         this.refresh_HardMuted()
     },
 
-    get_mode_text(){
+    get_mode_text() {
         if (this._isPhonetic) {
             return "tran"
         } else {
@@ -130,7 +130,7 @@ const STATE = {
         }
     },
 
-    toggleSpellingMode(){
+    toggleSpellingMode() {
         this._isPhonetic = !this.isPhonetic;
         this.refresh_text()
     },
@@ -140,9 +140,9 @@ const STATE = {
             const index = this.voices.indexOf(this._voice)
             if (index === -1 && this._voice !== "echo") {
                 this._voice = "echo"
-            } else if (index === -1 ) {
+            } else if (index === -1) {
                 this._voice = this.voices[0]
-            } else if  (index === this.voices.length - 1) {
+            } else if (index === this.voices.length - 1) {
                 this._voice = "echo"
             } else {
                 this._voice = this.voices[index + 1]
@@ -168,22 +168,22 @@ const STATE = {
             document.querySelector("#text_mode").innerHTML = "æ";
             document.querySelector("#book_bʊ́k").innerHTML = "bʊ́k:"
             document.querySelector("#chapter_ʧǽptər").innerHTML = "ʧǽptər:"
-            if (["B001"].includes(this.BXXX)){
+            if (["B001"].includes(this.BXXX)) {
                 document.querySelector("#kindle").innerHTML = "báɪ kᵻ́ndəl"
             } else {
                 document.querySelector("#kindle").innerHTML = ""
             }
             const book_title = truncateString(obj_tracks[this.BXXX]["C000"]["S000"]["tran"])
-            const chapter_title =   truncateString(obj_tracks[this.BXXX][this.CXXX]["S000"]["tran"])
+            const chapter_title = truncateString(obj_tracks[this.BXXX][this.CXXX]["S000"]["tran"])
             const text = obj_tracks[this.BXXX][this.CXXX][this.SXXX]["tran"]
             document.querySelector("#book_title").innerHTML = book_title
             trimText("#book_title")
             document.querySelector("#chapter_title").innerHTML = chapter_title
             trimText("#chapter_title")
             document.querySelector("#sentence_number").innerHTML = addOneToNumber(this.SXXX.slice(2, 4))
-            document.querySelector("#sentence_total_number").innerHTML = Object.keys(obj_tracks[this.BXXX][this.CXXX]).length.toString().padStart(2, '0') 
+            document.querySelector("#sentence_total_number").innerHTML = Object.keys(obj_tracks[this.BXXX][this.CXXX]).length.toString().padStart(2, '0')
             document.querySelector("#text").innerHTML = `${text.replace(": ", "<br><br>")}`
-            if (this.CXXX === "C000"){
+            if (this.CXXX === "C000") {
                 document.querySelector("#chapter_title").innerHTML = "ᵻ̀ntrədʌ́kʃən"
                 trimText("#chapter_title")
             }
@@ -191,7 +191,7 @@ const STATE = {
             document.querySelector("#text_mode").innerHTML = "a";
             document.querySelector("#book_bʊ́k").innerHTML = "Book:"
             document.querySelector("#chapter_ʧǽptər").innerHTML = "Chapter:"
-            if (["B001"].includes(this.BXXX)){
+            if (["B001"].includes(this.BXXX)) {
                 document.querySelector("#kindle").innerHTML = "Buy Kindle"
             } else {
                 document.querySelector("#kindle").innerHTML = ""
@@ -204,25 +204,25 @@ const STATE = {
             document.querySelector("#chapter_title").innerHTML = chapter_title
             trimText("#chapter_title")
             document.querySelector("#sentence_number").innerHTML = addOneToNumber(this.SXXX.slice(2, 4))
-            document.querySelector("#sentence_total_number").innerHTML = Object.keys(obj_tracks[this.BXXX][this.CXXX]).length.toString().padStart(2, '0') 
+            document.querySelector("#sentence_total_number").innerHTML = Object.keys(obj_tracks[this.BXXX][this.CXXX]).length.toString().padStart(2, '0')
             document.querySelector("#text").innerHTML = `${text.replace(": ", "<br><br>")}`
-            if (this.CXXX === "C000"){
+            if (this.CXXX === "C000") {
                 document.querySelector("#chapter_title").innerHTML = "Introduction"
                 trimText("#chapter_title")
             }
         }
     },
 
-    refresh_repeat(){
-        if (this._isRepeat){
+    refresh_repeat() {
+        if (this._isRepeat) {
             document.querySelector("#repeat").innerHTML = get_ICON("si_repeat")
         } else {
             document.querySelector("#repeat").innerHTML = get_ICON("no_repeat")
         }
     },
 
-    refresh_HardMuted(){
-        if (this._isHardMuted){
+    refresh_HardMuted() {
+        if (this._isHardMuted) {
             document.querySelector("#sound").innerHTML = get_ICON("no_sound")
             pause_play()
         } else {
@@ -231,8 +231,8 @@ const STATE = {
         }
     },
 
-    refresh_SoftMuted(){
-        if (this._isSoftMuted){
+    refresh_SoftMuted() {
+        if (this._isSoftMuted) {
             document.querySelector("#sound").innerHTML = get_ICON("no_sound")
             pause_play()
         } else {
@@ -241,14 +241,14 @@ const STATE = {
         }
     },
 
-    refresh(){
+    refresh() {
         this.refresh_text()
         this.refresh_repeat()
         this.refresh_HardMuted()
         this.refresh_voice()
     },
 
-    refresh_warning (){
+    refresh_warning() {
         // const isBookWithSound = ["B001", "B002", "B009", "B016", "B020"].includes(this.BXXX)
         // const areVoicesAvailable = this.voices.length !== 0
         // if (areVoicesAvailable || isBookWithSound) {
@@ -347,7 +347,7 @@ function openInNewTab(url) {
     newTab.click();
 }
 
-function get_filtered_out_chapters(){
+function get_filtered_out_chapters() {
     const url = "./filters/filters.txt"
     const filters_text = get_text(url)
     return filters_text.split("\n").filter(line => {
@@ -359,7 +359,7 @@ function get_filtered_out_chapters(){
     }, {})
 }
 
-function get_filters(){
+function get_filters() {
     const url = "./filters/filters.txt"
     const filters_text = get_text(url)
     return filters_text.split("\n").filter(line => {
@@ -371,7 +371,7 @@ function get_filters(){
     }, {})
 }
 
-function get_books(TEXTS_TRANS){
+function get_books(TEXTS_TRANS) {
     const books = {}
     const folder = TEXTS_TRANS === "TEXTS" ? "text" : "transcriptions"
     const xxxxxx = TEXTS_TRANS === "TEXTS" ? "TEXTS" : "TRANS"
@@ -399,18 +399,18 @@ function get_books(TEXTS_TRANS){
         `./${folder}/books/B021/B021_${xxxxxx}_ALL.txt`,
         `./${folder}/books/B022/B022_${xxxxxx}_ALL.txt`,
     ]
-    for (const url of urls){
+    for (const url of urls) {
         const text = get_text(url)
-        if (text !== ""){
+        if (text !== "") {
             const lines = text.trim().split("\n")
             let BXXX = ""
             let CXXX = ""
             let SXXX = ""
             let iSXXX = 0
             const regex = /^B\d{3}C\d{3}$/;
-            for (let line of lines){
-                if (line.trim() !== ""){
-                    if (regex.test(line.slice(0, 8))){
+            for (let line of lines) {
+                if (line.trim() !== "") {
+                    if (regex.test(line.slice(0, 8))) {
                         BXXX = line.slice(0, 4)
                         CXXX = line.slice(4, 8)
                         iSXXX = 0
@@ -418,7 +418,7 @@ function get_books(TEXTS_TRANS){
                         line = line.replace(BXXX + CXXX + ": ", "")
                     } else {
                         iSXXX += 1
-                    }    
+                    }
                     SXXX = "S" + iSXXX.toString().padStart(3, '0')
                     if (books[BXXX] === undefined) {
                         books[BXXX] = {}
@@ -434,14 +434,14 @@ function get_books(TEXTS_TRANS){
     return books
 }
 
-function applyfiter(tracks, filtered_out_chapters){
+function applyfiter(tracks, filtered_out_chapters) {
     const filtered_tracks = {}
     const BXXXs = Object.keys(tracks)
-    for (const BXXX of BXXXs){
+    for (const BXXX of BXXXs) {
         filtered_tracks[BXXX] = {}
         const CXXXs = Object.keys(tracks[BXXX])
-        for (const CXXX of CXXXs){
-            if (filtered_out_chapters[BXXX + CXXX] === undefined){
+        for (const CXXX of CXXXs) {
+            if (filtered_out_chapters[BXXX + CXXX] === undefined) {
                 filtered_tracks[BXXX][CXXX] = tracks[BXXX][CXXX]
             }
         }
@@ -449,15 +449,15 @@ function applyfiter(tracks, filtered_out_chapters){
     return filtered_tracks
 }
 
-function get_obj_tracks(){
+function get_obj_tracks() {
     const obj_tracks = {}
     const obj_books_texts = get_books("TEXTS")
     const obj_books_trans = get_books("TRANS")
-    for (const BXXX in obj_books_trans){
+    for (const BXXX in obj_books_trans) {
         obj_tracks[BXXX] = {}
-        for (const CXXX in obj_books_trans[BXXX]){
+        for (const CXXX in obj_books_trans[BXXX]) {
             obj_tracks[BXXX][CXXX] = {}
-            for (const SXXX in obj_books_trans[BXXX][CXXX]){
+            for (const SXXX in obj_books_trans[BXXX][CXXX]) {
                 obj_tracks[BXXX][CXXX][SXXX] = {
                     "code": BXXX + CXXX + SXXX,
                     "text": obj_books_texts[BXXX][CXXX][SXXX],
@@ -486,8 +486,8 @@ function distance(str1, str2) {
     }
     for (let i = 1; i <= m; i++) {
         for (let j = 1; j <= n; j++) {
-        const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
-        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+            const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+            d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
         }
     }
     return d[m][n];
@@ -496,8 +496,8 @@ function distance(str1, str2) {
 function* enumerate(iterable) {
     let index = 0;
     for (const item of iterable) {
-      yield [index, item];
-      index++;
+        yield [index, item];
+        index++;
     }
 }
 
@@ -523,7 +523,7 @@ function addOneToNumber(numStr) {
     }
 }
 //ECHO_f6b6961a72f79f3b0e46a0312422a0.mp3
-function play(){
+function play() {
     STATE.refresh_text();
     resizeText();
     if (STATE.isHardMuted || STATE.isSoftMuted) {
@@ -533,51 +533,51 @@ function play(){
     const audioEchoFileFullPath = `./audio/echo/${get_hash(text)}.mp3`
     const audioFileFullPath = obj_tracks[STATE.BXXX][STATE.CXXX][STATE.SXXX]["audio"];
     const voice = STATE.voice
-    if ((voice === "echo") && fileExistsSync(audioEchoFileFullPath)){
-        pause_play()      
+    if ((voice === "echo") && fileExistsSync(audioEchoFileFullPath)) {
+        pause_play()
         const audio = new Audio(audioEchoFileFullPath);
         audio.playbackRate = playbackRate;
         audios.push(audio)
         audio.addEventListener("ended", function () {
             setTimeout(function () {
-                if (!STATE.isRepeat){
+                if (!STATE.isRepeat) {
                     next_track()
                 } else {
-                    play()                
+                    play()
                 }
             }, 600)
         })
         audio.play()
-    } else if ((voice === "echo" && fileExistsSync(audioFileFullPath))){
-        pause_play()      
+    } else if ((voice === "echo" && fileExistsSync(audioFileFullPath))) {
+        pause_play()
         const audio = new Audio(audioFileFullPath);
         audio.playbackRate = playbackRate;
         audios.push(audio)
         audio.addEventListener("ended", function () {
             setTimeout(function () {
-                if (!STATE.isRepeat){
+                if (!STATE.isRepeat) {
                     next_track()
                 } else {
-                    play()                
+                    play()
                 }
             }, 600)
         })
-        audio.play()   
+        audio.play()
     } else if (voice !== "echo") {
         pause_play()
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.voice = STATE.voice
         utterance.rate = 0.85;
-        utterance.onend = function(){
+        utterance.onend = function () {
             setTimeout(function () {
-                if (!STATE.isRepeat){
+                if (!STATE.isRepeat) {
                     next_track()
                 } else {
-                    play()                  
+                    play()
                 }
             }, 600)
         }
-        window.speechSynthesis.speak(utterance);                 
+        window.speechSynthesis.speak(utterance);
     }
 }
 
@@ -588,7 +588,7 @@ function pause_play() {
     })
 }
 
-function book_up(){
+function book_up() {
     const books = Object.keys(obj_tracks)
     const iBXXX = books.indexOf(STATE.BXXX)
     if (iBXXX < books.length - 1) {
@@ -600,10 +600,10 @@ function book_up(){
     }
 }
 
-function book_down(){
+function book_down() {
     const books = Object.keys(obj_tracks)
     const iBXXX = books.indexOf(STATE.BXXX)
-    if (iBXXX > 0){
+    if (iBXXX > 0) {
         STATE.BXXX = books[iBXXX - 1]
         STATE.CXXX = "C000"
         STATE.SXXX = "S000"
@@ -612,10 +612,10 @@ function book_down(){
     }
 }
 
-function chapter_up(){
+function chapter_up() {
     const chapters = Object.keys(obj_tracks[STATE.BXXX])
     const iCXXX = chapters.indexOf(STATE.CXXX)
-    if (iCXXX < chapters.length - 1){
+    if (iCXXX < chapters.length - 1) {
         STATE.CXXX = chapters[iCXXX + 1]
         STATE.SXXX = "S000"
         STATE.refresh_text()
@@ -623,7 +623,7 @@ function chapter_up(){
     }
 }
 
-function chapter_down(){
+function chapter_down() {
     const chapters = Object.keys(obj_tracks[STATE.BXXX])
     const iCXXX = chapters.indexOf(STATE.CXXX)
     if (iCXXX > 0) {
@@ -637,14 +637,14 @@ function chapter_down(){
 function sentence_up() {
     const sentences = Object.keys(obj_tracks[STATE.BXXX][STATE.CXXX])
     const iSXXX = sentences.indexOf(STATE.SXXX)
-    if (iSXXX < sentences.length - 1){
+    if (iSXXX < sentences.length - 1) {
         STATE.SXXX = sentences[iSXXX + 1]
         STATE.refresh_text()
         play()
     }
 }
 
-function sentence_down(){
+function sentence_down() {
     const sentences = Object.keys(obj_tracks[STATE.BXXX][STATE.CXXX])
     const iSXXX = sentences.indexOf(STATE.SXXX)
     if (iSXXX > 0) {
@@ -654,7 +654,7 @@ function sentence_down(){
     }
 }
 
-function next_track(){
+function next_track() {
     const books = Object.keys(obj_tracks)
     const chapters = Object.keys(obj_tracks[STATE.BXXX])
     const sentences = Object.keys(obj_tracks[STATE.BXXX][STATE.CXXX])
@@ -663,7 +663,7 @@ function next_track(){
     const iSXXX = sentences.indexOf(STATE.SXXX)
     isLastSentence = iSXXX >= sentences.length - 1
     isLastChapter = iCXXX >= chapters.length - 1
-    isLastBook = iBXXX >= books.length - 1 
+    isLastBook = iBXXX >= books.length - 1
     if (!isLastSentence) {
         STATE.SXXX = sentences[iSXXX + 1]
     } else if (!isLastChapter) {
@@ -684,7 +684,7 @@ function next_track(){
     play()
 }
 
-function previous_track(){
+function previous_track() {
     //todo
 }
 
@@ -707,14 +707,14 @@ document.querySelector("#sound").addEventListener("click", function () {
 document.querySelector("#max_min").addEventListener("click", function () {
     if (document.fullscreenElement) {
         document.exitFullscreen();
-      } else {
+    } else {
         document.documentElement.requestFullscreen();
-      }
+    }
 })
 
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();        
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter_') {
+        event.preventDefault();
         next_track();
     } else if (event.key === " ") {
         event.preventDefault();
@@ -737,10 +737,10 @@ document.addEventListener('keydown', function(event) {
     } else if (event.key === "a") {
         event.preventDefault();
         document.querySelector("#text_mode").click()
-    } else if (event.key === 'Escape' || event.keyCode === 27) { 
-        for (const id of ["top", "book", "chapter", "sentence"]){
+    } else if (event.key === 'Escape' || event.keyCode === 27) {
+        for (const id of ["top", "book", "chapter", "sentence"]) {
             document.querySelector(`#${id}-row`).style.display = 'flex';
-        }    
+        }
     }
 });
 
@@ -759,9 +759,9 @@ document.querySelector("#text-row").addEventListener("click", function () {
 window.addEventListener('resize', () => {
     const screenWidth = document.documentElement.clientWidth;
     const screenHeight = document.documentElement.clientHeight;
-    for (const id of ["top", "book", "chapter", "sentence"]){
+    for (const id of ["top", "book", "chapter", "sentence"]) {
         if (screenWidth > screenHeight * 1.8) {
-            document.querySelector(`#${id}-row`).style.display = 'none'; 
+            document.querySelector(`#${id}-row`).style.display = 'none';
         } else {
             document.querySelector(`#${id}-row`).style.display = 'flex';
         }
@@ -798,9 +798,9 @@ document.querySelector("#sentence_up").addEventListener("click", sentence_up)
 document.querySelector("#sentence_down").addEventListener("click", sentence_down)
 
 document.querySelector("#kindle").addEventListener("click", function () {
-    if (STATE.BXXX === "B001"){
+    if (STATE.BXXX === "B001") {
         const url = "https://www.amazon.co.uk/brief-history-Artificial-Intelligence-ebook/dp/B0C5DWF7LL/ref=sr_1_3?crid=JZR2GY582PLP&dib=eyJ2IjoiMSJ9.JnBwUikzDVNNbEBB3gsQGVjRNSPLyT3gYzaAVz44pMZkinZ2mpvIvTDbTUKt9ivXrs5HR4ckDZpTCX1nC9R06LN5_NIUbWEeNuYFwLwgLoDSLHiCNc5Taowts64SYdidzUzgagp5r7FpcDgTGH_r3LUhYqZEFh9ZRFjASlfAOqW30o0jdtelu9-22fMh9u5zon1m3MFhXafZ_JsirOTh5Y4czrNsONOzbnLKSJulIFI.nFU77SXnHOo00pTQW5pVrVxoCGclOMu0-I1M0x3GWf4&dib_tag=se&keywords=kindle+a+brief+history+of+artificial+intelligence&qid=1717773263&sprefix=kindle+a+brief+history+of+artificial+intelligence%2Caps%2C91&sr=8-3"
-        openInNewTab(url)        
+        openInNewTab(url)
     }
 });
 
@@ -808,7 +808,7 @@ document.querySelector("#voice").addEventListener('click', function () {
     STATE.next_voice()
 });
 
-function hideBelowBookRow(){
+function hideBelowBookRow() {
     document.querySelector("#chapter-row").style.display = "none"
     document.querySelector("#sentence-row").style.display = "none"
     document.querySelector("#text-row").style.display = "none"
@@ -818,7 +818,7 @@ function hideBelowBookRow(){
     document.querySelector("#row-warnings").style.display = "none"
 }
 
-function showBelowBookRow(){
+function showBelowBookRow() {
     document.querySelector("#chapter-row").style.display = "flex"
     document.querySelector("#sentence-row").style.display = "flex"
     document.querySelector("#text-row").style.display = "flex"
@@ -827,7 +827,7 @@ function showBelowBookRow(){
     document.querySelector("#book > .title").style.display = "flex"
 }
 
-function hideBelowChapterRow(){
+function hideBelowChapterRow() {
     document.querySelector("#sentence-row").style.display = "none"
     document.querySelector("#text-row").style.display = "none"
     document.querySelector("#chapter_down").style.display = "none"
@@ -836,7 +836,7 @@ function hideBelowChapterRow(){
     document.querySelector("#row-warnings").style.display = "none"
 }
 
-function showBelowChapterRow(){
+function showBelowChapterRow() {
     document.querySelector("#sentence-row").style.display = "flex"
     document.querySelector("#text-row").style.display = "flex"
     document.querySelector("#chapter_down").style.display = "flex"
@@ -844,7 +844,7 @@ function showBelowChapterRow(){
     document.querySelector("#chapter > .title").style.display = "flex"
 }
 
-document.querySelector("#book").addEventListener("click", function (){
+document.querySelector("#book").addEventListener("click", function () {
     STATE.isSoftMuted = true
     STATE.refresh_SoftMuted()
     if (document.querySelector("#list") !== null) {
@@ -860,7 +860,7 @@ document.querySelector("#book").addEventListener("click", function (){
     div_list.id = "list"
     div_list.className = "column list";
     document.querySelector("#app").appendChild(div_list);
-    if (STATE.isPhonetic){
+    if (STATE.isPhonetic) {
         document.querySelector("#book_title").innerHTML = "ʧúz ə bʊ́k:"
         trimText("#book_title")
     } else {
@@ -868,25 +868,25 @@ document.querySelector("#book").addEventListener("click", function (){
         trimText("#book_title")
     }
     const BXXXs = Object.keys(obj_tracks)
-    for (const BXXX of BXXXs){
+    for (const BXXX of BXXXs) {
         const div = document.createElement("div");
         div.className = "row list-element";
         div.innerHTML = truncateString(obj_tracks[BXXX]["C000"]["S000"][STATE.get_mode_text()])
-        div.addEventListener("click", function() {
+        div.addEventListener("click", function () {
             STATE.BXXX = BXXX
             STATE.CXXX = "C000"
             STATE.SXXX = "S000"
             deleteElementAndChildren("list")
             showBelowBookRow()
             STATE.isSoftMuted = false
-            STATE.refresh()    
+            STATE.refresh()
         });
         div_list.appendChild(div);
         trimElementText(div)
     }
 });
 
-document.querySelector("#chapter").addEventListener("click", function (){
+document.querySelector("#chapter").addEventListener("click", function () {
     STATE.isSoftMuted = true
     STATE.refresh_SoftMuted()
     if (document.querySelector("#list") !== null) {
@@ -901,7 +901,7 @@ document.querySelector("#chapter").addEventListener("click", function (){
     div.id = "list"
     div.className = "column list";
     document.querySelector("#app").appendChild(div);
-    if (STATE.isPhonetic){
+    if (STATE.isPhonetic) {
         document.querySelector("#chapter_title").innerHTML = "ʧúz ə ʧǽptər:"
         trimText("#chapter_title")
     } else {
@@ -909,12 +909,12 @@ document.querySelector("#chapter").addEventListener("click", function (){
         trimText("#chapter_title")
     }
     const CXXXs = Object.keys(obj_tracks[STATE.BXXX])
-    for (const CXXX of CXXXs){ 
+    for (const CXXX of CXXXs) {
         const div = document.createElement("div");
         div.className = "row list-element";
-        if (CXXX !== "C000"){
-           div.innerHTML = truncateString(obj_tracks[STATE.BXXX][CXXX]["S000"][STATE.get_mode_text()])
-           trimElementText(div)
+        if (CXXX !== "C000") {
+            div.innerHTML = truncateString(obj_tracks[STATE.BXXX][CXXX]["S000"][STATE.get_mode_text()])
+            trimElementText(div)
         } else if (STATE.isPhonetic) {
             div.innerHTML = "ᵻ̀ntrədʌ́kʃən"
             trimElementText(div)
@@ -922,7 +922,7 @@ document.querySelector("#chapter").addEventListener("click", function (){
             div.innerHTML = "Introduction"
             trimElementText(div)
         }
-        div.addEventListener("click", function(){
+        div.addEventListener("click", function () {
             STATE.CXXX = CXXX
             STATE.SXXX = "S000"
             deleteElementAndChildren("list")
@@ -960,7 +960,7 @@ swipeContainer.addEventListener('touchend', (e) => {
         if (deltaX > +1 * min_delta) {
             sentence_down()
             console.log('Swiped right');
-        } 
+        }
         if (deltaX < -1 * min_delta) {
             console.log('Swiped left');
             next_track()
@@ -986,7 +986,7 @@ const audios = []
 const playbackRate = 0.8
 const filtered_out_chapters = get_filtered_out_chapters()
 const unfiltered_obj_tracks = get_obj_tracks()
-const obj_tracks = applyfiter(unfiltered_obj_tracks, filtered_out_chapters) 
+const obj_tracks = applyfiter(unfiltered_obj_tracks, filtered_out_chapters)
 
 setTimeout(_ => {
     STATE.get_voices()
@@ -996,7 +996,7 @@ setTimeout(_ => {
     }
     STATE.refresh()
     document.querySelector("#enter-btn").innerHTML = "ENTER"
-    document.querySelector("#enter-btn").addEventListener("click", function() {
+    document.querySelector("#enter-btn").addEventListener("click", function () {
         document.querySelector("#app").style.display = "flex"
         document.querySelector("#app00").style.display = "none"
     });
@@ -1005,3 +1005,81 @@ setTimeout(_ => {
 ///////////////////////////////////////////////
 //                                           //
 ///////////////////////////////////////////////
+
+class VoiceRecorder {
+    constructor() {
+        this.mediaRecorder = null;
+        this.audioChunks = [];
+        this.audioBlob = null;
+        this.audioUrl = null;
+        this.audio = null;
+        this.init();
+    }
+
+    async init() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    sampleRate: 48000,
+                    channelCount: 1,
+                    echoCancellation: false,
+                    noiseSuppression: false,
+                    autoGainControl: false
+                }
+            });
+            this.mediaRecorder = new MediaRecorder(stream);
+            this.mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    this.audioChunks.push(event.data);
+                }
+            };
+            this.mediaRecorder.onstop = () => {
+                this.audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                this.audioUrl = URL.createObjectURL(this.audioBlob);
+                this.audio = new Audio(this.audioUrl);
+                this.audio.onended = () => {
+                    console.log("Playing stopped");
+                };
+                console.log("Recording stopped");
+                console.log("Playing recorded audio");
+                this.audio.play();
+            };
+            document.addEventListener('keydown', this.handleKeyDown.bind(this));
+            document.addEventListener('keyup', this.handleKeyUp.bind(this));
+        } catch (err) {
+            console.error("Error accessing audio devices:", err);
+        }
+    }
+
+    handleKeyDown(event) {
+        const key = event.key.toLowerCase();
+        if (key === 'enter' && !event.repeat) {
+            this.startRecording();
+        }
+    }
+
+    handleKeyUp(event) {
+        const key = event.key.toLowerCase();
+        if (key === 'enter') {
+            this.stopOrPlayRecording();
+        }
+    }
+
+    startRecording() {
+        console.log(this.mediaRecorder.state)
+        if (this.mediaRecorder && this.mediaRecorder.state === 'inactive'){
+            this.audio = null;
+            this.audioChunks = [];
+            this.mediaRecorder.start();
+            console.log("Recording started");
+        }
+    }
+
+    stopOrPlayRecording() {
+        this.mediaRecorder.stop();
+    }
+}
+
+new VoiceRecorder();
+
+
