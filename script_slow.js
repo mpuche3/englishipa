@@ -1013,6 +1013,7 @@ class VoiceRecorder {
         this.audioBlob = null;
         this.audioUrl = null;
         this.audio = null;
+        this.continuePlayAfter = false;
         this.init();
     }
 
@@ -1034,16 +1035,20 @@ class VoiceRecorder {
                 }
             };
             this.mediaRecorder.onstop = () => {
+                console.log("Recording stopped");
+                console.log("Playing recorded audio");
                 this.audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
                 this.audioUrl = URL.createObjectURL(this.audioBlob);
                 this.audio = new Audio(this.audioUrl);
                 this.audio.onended = () => {
                     console.log("Playing stopped");
-                };
-                console.log("Recording stopped");
-                console.log("Playing recorded audio");
+                    if (this.continuePlayAfter === true) {
+                        STATE._isHardMuted === false;
+                        STATE.refresh_HardMuted();
+                    }
+                }
                 this.audio.play();
-            };
+            }
             document.addEventListener('keydown', this.handleKeyDown.bind(this));
             document.addEventListener('keyup', this.handleKeyUp.bind(this));
         } catch (err) {
@@ -1067,17 +1072,34 @@ class VoiceRecorder {
 
     startRecording() {
         console.log(this.mediaRecorder.state)
-        if (this.mediaRecorder && this.mediaRecorder.state === 'inactive'){
+        if (this.mediaRecorder && this.mediaRecorder.state === 'inactive') {
             this.audio = null;
             this.audioChunks = [];
             this.mediaRecorder.start();
             console.log("Recording started");
+            if (STATE._isHardMuted === false) {
+                this.continuePlayAfter = true;
+                STATE._isHardMuted === true;
+                STATE.refresh_HardMuted()
+                pause_play()
+            }
         }
     }
 
     stopOrPlayRecording() {
         this.mediaRecorder.stop();
     }
+
+    // refresh_HardMuted() {
+    //     if (this._isHardMuted) {
+    //         document.querySelector("#sound").innerHTML = get_ICON("no_sound")
+    //         pause_play()
+    //     } else {
+    //         document.querySelector("#sound").innerHTML = get_ICON("si_sound")
+    //         play()
+    //     }
+    // },
+
 }
 
 new VoiceRecorder();
