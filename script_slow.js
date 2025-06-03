@@ -655,6 +655,10 @@ function sentence_down() {
 }
 
 function next_track() {
+    if (voiceRecorder && voiceRecorder.destroy) {
+        voiceRecorder.destroy()
+    }
+    voiceRecorder = new VoiceRecorder()
     const books = Object.keys(obj_tracks)
     const chapters = Object.keys(obj_tracks[STATE.BXXX])
     const sentences = Object.keys(obj_tracks[STATE.BXXX][STATE.CXXX])
@@ -1012,6 +1016,7 @@ setTimeout(_ => {
 class VoiceRecorder {
     constructor() {
         this.mediaRecorder = null;
+        this.stream = null;          // ← add this
         this.audioChunks = [];
         this.audioBlob = null;
         this.audioUrl = null;
@@ -1031,6 +1036,7 @@ class VoiceRecorder {
                     autoGainControl: false
                 }
             });
+            this.stream = stream;
             this.mediaRecorder = new MediaRecorder(stream);
             this.mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) {
@@ -1041,16 +1047,20 @@ class VoiceRecorder {
                 console.log("Recording stopped");
                 console.log("Playing recorded audio");
                 this.audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                if (this.audioUrl) {
+                    URL.revokeObjectURL(this.audioUrl);
+                }
                 this.audioUrl = URL.createObjectURL(this.audioBlob);
                 this.audio = new Audio(this.audioUrl);
                 this.audio.onended = () => {
                     console.log("Playing stopped");
                     if (this.continuePlayAfter === true) {
-                        STATE._isHardMuted === false;
+                        STATE._isHardMuted = false;
                         STATE.refresh_HardMuted();
                     }
                 }
                 this.audio.play();
+                this.audioChunks = [];
             }
             document.addEventListener('keydown', this.handleKeyDown.bind(this));
             document.addEventListener('keyup', this.handleKeyUp.bind(this));
@@ -1076,13 +1086,22 @@ class VoiceRecorder {
     startRecording() {
         console.log(this.mediaRecorder.state)
         if (this.mediaRecorder && this.mediaRecorder.state === 'inactive') {
-            this.audio = null;
+            if (this.audioUrl) {
+                URL.revokeObjectURL(this.audioUrl);
+                this.audioUrl = null;
+            }
+            if (this.audio) {
+                this.audio.pause();
+                this.audio.src = '';
+                this.audio = null;
+            }
+
             this.audioChunks = [];
             this.mediaRecorder.start();
             console.log("Recording started");
             if (STATE._isHardMuted === false) {
                 this.continuePlayAfter = true;
-                STATE._isHardMuted === true;
+                STATE._isHardMuted = true;
                 STATE.refresh_HardMuted()
                 pause_play()
             }
@@ -1091,6 +1110,33 @@ class VoiceRecorder {
 
     stopRecording() {
         this.mediaRecorder.stop();
+    }
+
+    destroy() {
+        // 1) If there’s still a running recorder, stop it
+        if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+            this.mediaRecorder.stop();
+        }
+        // 2) Revoke any existing object URL
+        if (this.audioUrl) {
+            URL.revokeObjectURL(this.audioUrl);
+            this.audioUrl = null;
+        }
+        // 3) Drop references to Blob/audio so GC can collect
+        this.audioBlob = null;
+        if (this.audio) {
+            this.audio.pause();
+            this.audio.src = '';
+            this.audio = null;
+        }
+        this.audioChunks = [];
+        
+        // 4) Stop all tracks on the stream
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+        }
+        this.mediaRecorder = null;
     }
 
     // refresh_HardMuted() {
@@ -1105,6 +1151,6 @@ class VoiceRecorder {
 
 }
 
-const voiceRecorder = new VoiceRecorder();
+let voiceRecorder = new VoiceRecorder();
 
 
