@@ -939,24 +939,28 @@ document.querySelector("#chapter").addEventListener("click", function () {
 //                                           //
 ///////////////////////////////////////////////
 
+let touchStartTime = 0;
 let startX, startY, endX, endY;
-const swipeContainer = document.getElementById('text-row');
 
-swipeContainer.addEventListener('touchstart', (e) => {
+document.getElementById('text-row').addEventListener('touchstart', (e) => {
     startX = e.touches[0].pageX;
     startY = e.touches[0].pageY;
+    touchStartTime = Date.now();
+    voiceRecorder.startRecording();
 });
 
-swipeContainer.addEventListener('touchend', (e) => {
+document.getElementById('text-row').addEventListener('touchend', (e) => {
+    const min_time = 600;
     const min_delta = 5;
     endX = e.changedTouches[0].pageX;
     endY = e.changedTouches[0].pageY;
-
     const deltaX = endX - startX;
     const deltaY = endY - startY;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // horizontal swipe
+    const touchDuration = Date.now() - touchStartTime;
+    voiceRecorder.stopRecording()
+    if (touchDuration > min_time) {
+        // VoiceRecorder.playRecording()
+    } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > +1 * min_delta) {
             sentence_down()
             console.log('Swiped right');
@@ -966,7 +970,6 @@ swipeContainer.addEventListener('touchend', (e) => {
             next_track()
         }
     } else {
-        // vertical swipe
         if (deltaY > +1 * min_delta) {
             console.log('Swiped down');
             sentence_down()
@@ -1066,7 +1069,7 @@ class VoiceRecorder {
     handleKeyUp(event) {
         const key = event.key.toLowerCase();
         if (key === 'enter') {
-            this.stopOrPlayRecording();
+            this.stopRecording();
         }
     }
 
@@ -1086,7 +1089,7 @@ class VoiceRecorder {
         }
     }
 
-    stopOrPlayRecording() {
+    stopRecording() {
         this.mediaRecorder.stop();
     }
 
@@ -1102,6 +1105,6 @@ class VoiceRecorder {
 
 }
 
-new VoiceRecorder();
+const voiceRecorder = new VoiceRecorder();
 
 
