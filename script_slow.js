@@ -1082,6 +1082,8 @@ class VoiceRecorder {
 document.addEventListener('keydown', function (event) {
     const key = event.key.toLowerCase();
     if (key === 'enter' && !event.repeat && recording === false) {
+        event.stopPropagation();
+        event.preventDefault();
         enterStartTime = Date.now();
         recording = true;
         voiceRecorder.startRecording();
