@@ -943,47 +943,7 @@ document.querySelector("#chapter").addEventListener("click", function () {
 //                                           //
 ///////////////////////////////////////////////
 
-let touchStartTime = 0;
-let startX, startY, endX, endY;
 
-document.getElementById('text-row').addEventListener('touchstart', (e) => {
-    startX = e.touches[0].pageX;
-    startY = e.touches[0].pageY;
-    touchStartTime = Date.now();
-    voiceRecorder.startRecording();
-});
-
-document.getElementById('text-row').addEventListener('touchend', (e) => {
-    const min_time = 600;
-    const min_delta = 5;
-    endX = e.changedTouches[0].pageX;
-    endY = e.changedTouches[0].pageY;
-    const deltaX = endX - startX;
-    const deltaY = endY - startY;
-    const touchDuration = Date.now() - touchStartTime;
-    voiceRecorder.stopRecording()
-    if (touchDuration > min_time) {
-        // VoiceRecorder.playRecording()
-    } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        if (deltaX > +1 * min_delta) {
-            sentence_down()
-            console.log('Swiped right');
-        }
-        if (deltaX < -1 * min_delta) {
-            console.log('Swiped left');
-            next_track()
-        }
-    } else {
-        if (deltaY > +1 * min_delta) {
-            console.log('Swiped down');
-            sentence_down()
-        }
-        if (deltaY < -1 * min_delta) {
-            console.log('Swiped up');
-            next_track()
-        }
-    }
-});
 
 ///////////////////////////////////////////////
 //                                           //
@@ -1062,49 +1022,34 @@ class VoiceRecorder {
                 this.audio.play();
                 this.audioChunks = [];
             }
-            document.addEventListener('keydown', this.handleKeyDown.bind(this));
-            document.addEventListener('keyup', this.handleKeyUp.bind(this));
         } catch (err) {
             console.error("Error accessing audio devices:", err);
         }
     }
 
-    handleKeyDown(event) {
-        const key = event.key.toLowerCase();
-        if (key === 'enter' && !event.repeat) {
-            this.startRecording();
-        }
-    }
-
-    handleKeyUp(event) {
-        const key = event.key.toLowerCase();
-        if (key === 'enter') {
-            this.stopRecording();
-        }
-    }
-
     startRecording() {
-        console.log(this.mediaRecorder.state)
-        if (this.mediaRecorder && this.mediaRecorder.state === 'inactive') {
-            if (this.audioUrl) {
-                URL.revokeObjectURL(this.audioUrl);
-                this.audioUrl = null;
-            }
-            if (this.audio) {
-                this.audio.pause();
-                this.audio.src = '';
-                this.audio = null;
-            }
+        if (this.mediaRecorder.state !== 'inactive') {
+            console.log("Error: Media Recorder is not inactive")
+            console.log(this.mediaRecorder.state)
+        }
+        if (this.audioUrl) {
+            URL.revokeObjectURL(this.audioUrl);
+            this.audioUrl = null;
+        }
+        if (this.audio) {
+            this.audio.pause();
+            this.audio.src = '';
+            this.audio = null;
+        }
 
-            this.audioChunks = [];
-            this.mediaRecorder.start();
-            console.log("Recording started");
-            if (STATE._isHardMuted === false) {
-                this.continuePlayAfter = true;
-                STATE._isHardMuted = true;
-                STATE.refresh_HardMuted()
-                pause_play()
-            }
+        this.audioChunks = [];
+        this.mediaRecorder.start();
+        console.log("Recording started");
+        if (STATE._isHardMuted === false) {
+            this.continuePlayAfter = true;
+            STATE._isHardMuted = true;
+            STATE.refresh_HardMuted()
+            pause_play()
         }
     }
 
@@ -1113,16 +1058,13 @@ class VoiceRecorder {
     }
 
     destroy() {
-        // 1) If there’s still a running recorder, stop it
         if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
             this.mediaRecorder.stop();
         }
-        // 2) Revoke any existing object URL
         if (this.audioUrl) {
             URL.revokeObjectURL(this.audioUrl);
             this.audioUrl = null;
         }
-        // 3) Drop references to Blob/audio so GC can collect
         this.audioBlob = null;
         if (this.audio) {
             this.audio.pause();
@@ -1130,27 +1072,84 @@ class VoiceRecorder {
             this.audio = null;
         }
         this.audioChunks = [];
-        
-        // 4) Stop all tracks on the stream
         if (this.stream) {
             this.stream.getTracks().forEach(track => track.stop());
             this.stream = null;
         }
-        this.mediaRecorder = null;
     }
-
-    // refresh_HardMuted() {
-    //     if (this._isHardMuted) {
-    //         document.querySelector("#sound").innerHTML = get_ICON("no_sound")
-    //         pause_play()
-    //     } else {
-    //         document.querySelector("#sound").innerHTML = get_ICON("si_sound")
-    //         play()
-    //     }
-    // },
-
 }
 
+document.addEventListener('keydown', function (event) {
+    const key = event.key.toLowerCase();
+    if (key === 'enter' && !event.repeat && recording === false) {
+        enterStartTime = Date.now();
+        recording = true;
+        voiceRecorder.startRecording();
+    }
+});
+
+document.addEventListener('keyup', function (event) {
+    const key = event.key.toLowerCase();
+    if (key === 'enter') {
+        if (recording === true) {
+            recording = false;
+            voiceRecorder.stopRecording();
+            const enterDurationMin = 1000
+            const enterDuration = Date.now() - enterStartTime;
+            console.log(enterDuration + ", " + enterDurationMin)
+            if (enterDuration < enterDurationMin){
+                next_track();
+            }                
+        }
+    }
+});
+
+document.getElementById('text-row').addEventListener('touchstart', (e) => {
+    startX = e.touches[0].pageX;
+    startY = e.touches[0].pageY;
+    touchStartTime = Date.now();
+    recording = true;
+    voiceRecorder.startRecording();
+});
+
+document.getElementById('text-row').addEventListener('touchend', (e) => {
+    const min_time = 600;
+    const min_delta = 5;
+    endX = e.changedTouches[0].pageX;
+    endY = e.changedTouches[0].pageY;
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+    const touchDuration = Date.now() - touchStartTime;
+    recording = false;
+    voiceRecorder.stopRecording()
+    if (touchDuration > min_time) {
+        next_track();
+    } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > +1 * min_delta) {
+            sentence_down()
+            console.log('Swiped right');
+        }
+        if (deltaX < -1 * min_delta) {
+            console.log('Swiped left');
+            next_track()
+        }
+    } else {
+        if (deltaY > +1 * min_delta) {
+            console.log('Swiped down');
+            sentence_down()
+        }
+        if (deltaY < -1 * min_delta) {
+            console.log('Swiped up');
+            next_track()
+        }
+    }
+});
+
+
+//
+
 let voiceRecorder = new VoiceRecorder();
-
-
+let recording = false;
+let enterStartTime = 0;
+let touchStartTime = 0;
+let startX, startY, endX, endY;
