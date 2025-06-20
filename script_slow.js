@@ -1014,10 +1014,10 @@ class VoiceRecorder {
                 this.audio = new Audio(this.audioUrl);
                 this.audio.onended = () => {
                     console.log("Playing stopped");
-                    if (this.continuePlayAfter === true) {
+                    // if (this.continuePlayAfter === true) {
                         STATE._isHardMuted = false;
                         STATE.refresh_HardMuted();
-                    }
+                    // }
                 }
                 this.audio.play();
                 this.audioChunks = [];
@@ -1122,7 +1122,7 @@ document.getElementById('text-row').addEventListener('touchend', (e) => {
     const touchDuration = Date.now() - touchStartTime;
     recording = false;
     voiceRecorder.stopRecording()
-    if (touchDuration > min_time) {
+    if (touchDuration < min_time) {
         next_track();
     } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > +1 * min_delta) {
