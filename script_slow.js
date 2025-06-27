@@ -25,6 +25,7 @@ const STATE = {
     CXXX: "C000",
     SXXX: "S000",
     voices: [],
+    _repeat_count: 0,
     _voice: "echo",
     _isPhonetic: false,
     _isRepeat: false,
@@ -540,9 +541,10 @@ function play() {
         audios.push(audio)
         audio.addEventListener("ended", function () {
             setTimeout(function () {
-                if (!STATE.isRepeat) {
+                if (!STATE.isRepeat || STATE._repeat_count > 60) {
                     next_track()
                 } else {
+                    STATE._repeat_count += 1;
                     play()
                 }
             }, 600)
@@ -555,9 +557,10 @@ function play() {
         audios.push(audio)
         audio.addEventListener("ended", function () {
             setTimeout(function () {
-                if (!STATE.isRepeat) {
+                if (!STATE.isRepeat || STATE._repeat_count > 60) {
                     next_track()
                 } else {
+                    STATE._repeat_count += 1;
                     play()
                 }
             }, 600)
@@ -570,9 +573,10 @@ function play() {
         utterance.rate = 0.85;
         utterance.onend = function () {
             setTimeout(function () {
-                if (!STATE.isRepeat) {
+                if (!STATE.isRepeat || STATE._repeat_count > 60) {
                     next_track()
                 } else {
+                    STATE._repeat_count += 1;
                     play()
                 }
             }, 600)
@@ -655,6 +659,7 @@ function sentence_down() {
 }
 
 function next_track() {
+    STATE._repeat_count = 0;
     if (voiceRecorder && voiceRecorder.destroy) {
         voiceRecorder.destroy()
     }
