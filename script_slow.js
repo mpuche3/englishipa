@@ -1095,21 +1095,21 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
-document.addEventListener('keyup', function (event) {
-    const key = event.key.toLowerCase();
-    if (key === 'enter') {
-        if (recording === true) {
-            recording = false;
-            // voiceRecorder.stopRecording();
-            const enterDurationMin = 1000
-            const enterDuration = Date.now() - enterStartTime;
-            console.log(enterDuration + ", " + enterDurationMin)
-            if (enterDuration < enterDurationMin){
-                next_track();
-            }                
-        }
-    }
-});
+// document.addEventListener('keyup', function (event) {
+//     const key = event.key.toLowerCase();
+//     if (key === 'enter') {
+//         if (recording === true) {
+//             recording = false;
+//             // voiceRecorder.stopRecording();
+//             const enterDurationMin = 1000
+//             const enterDuration = Date.now() - enterStartTime;
+//             console.log(enterDuration + ", " + enterDurationMin)
+//             if (enterDuration < enterDurationMin){
+//                 next_track();
+//             }                
+//         }
+//     }
+// });
 
 document.getElementById('text-row').addEventListener('touchstart', (e) => {
     startX = e.touches[0].pageX;
@@ -1129,9 +1129,10 @@ document.getElementById('text-row').addEventListener('touchend', (e) => {
     const touchDuration = Date.now() - touchStartTime;
     recording = false;
     // voiceRecorder.stopRecording()
-    if (touchDuration < min_time) {
-        next_track();
-    } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    // if (touchDuration < min_time) {
+    //     next_track();
+    // } else 
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX > +1 * min_delta) {
             sentence_down()
             console.log('Swiped right');
