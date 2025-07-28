@@ -1138,7 +1138,7 @@ document.getElementById('text-row').addEventListener('touchend', (e) => {
         }
         if (deltaX < -1 * min_delta) {
             console.log('Swiped left');
-            next_track()
+            sentence_up()
         }
     } else {
         if (deltaY > +1 * min_delta) {
@@ -1147,7 +1147,7 @@ document.getElementById('text-row').addEventListener('touchend', (e) => {
         }
         if (deltaY < -1 * min_delta) {
             console.log('Swiped up');
-            next_track()
+            sentence_up()
         }
     }
 });
