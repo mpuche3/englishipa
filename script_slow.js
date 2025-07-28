@@ -660,10 +660,10 @@ function sentence_down() {
 
 function next_track() {
     STATE._repeat_count = 0;
-    if (voiceRecorder && voiceRecorder.destroy) {
-        voiceRecorder.destroy()
-    }
-    voiceRecorder = new VoiceRecorder()
+    // if (voiceRecorder && voiceRecorder.destroy) {
+    //     voiceRecorder.destroy()
+    // }
+    // voiceRecorder = new VoiceRecorder()
     const books = Object.keys(obj_tracks)
     const chapters = Object.keys(obj_tracks[STATE.BXXX])
     const sentences = Object.keys(obj_tracks[STATE.BXXX][STATE.CXXX])
@@ -1091,7 +1091,7 @@ document.addEventListener('keydown', function (event) {
     if (key === 'enter' && !event.repeat && recording === false) {
         enterStartTime = Date.now();
         recording = true;
-        voiceRecorder.startRecording();
+        // voiceRecorder.startRecording();
     }
 });
 
@@ -1100,7 +1100,7 @@ document.addEventListener('keyup', function (event) {
     if (key === 'enter') {
         if (recording === true) {
             recording = false;
-            voiceRecorder.stopRecording();
+            // voiceRecorder.stopRecording();
             const enterDurationMin = 1000
             const enterDuration = Date.now() - enterStartTime;
             console.log(enterDuration + ", " + enterDurationMin)
@@ -1116,7 +1116,7 @@ document.getElementById('text-row').addEventListener('touchstart', (e) => {
     startY = e.touches[0].pageY;
     touchStartTime = Date.now();
     recording = true;
-    voiceRecorder.startRecording();
+    // voiceRecorder.startRecording();
 });
 
 document.getElementById('text-row').addEventListener('touchend', (e) => {
@@ -1128,7 +1128,7 @@ document.getElementById('text-row').addEventListener('touchend', (e) => {
     const deltaY = endY - startY;
     const touchDuration = Date.now() - touchStartTime;
     recording = false;
-    voiceRecorder.stopRecording()
+    // voiceRecorder.stopRecording()
     if (touchDuration < min_time) {
         next_track();
     } else if (Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -1152,10 +1152,7 @@ document.getElementById('text-row').addEventListener('touchend', (e) => {
     }
 });
 
-
-//
-
-let voiceRecorder = new VoiceRecorder();
+// let voiceRecorder = new VoiceRecorder();
 let recording = false;
 let enterStartTime = 0;
 let touchStartTime = 0;
